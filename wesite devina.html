@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personal Website - Animated with Music (Fixed)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+    /* Reset & base */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff0f7;
+      color: #d14774;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    a:focus, button:focus {
+      outline: 2px solid #ff7eb9;
+      outline-offset: 2px;
+    }
+
+    /* Layout grid */
+    .page-container {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      grid-template-rows: auto 1fr 50px;
+      grid-template-areas:
+        "sidebar header"
+        "sidebar main"
+        "sidebar footer";
+      min-height: 100vh;
+      background: #fff0f7;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      grid-area: sidebar;
+      background: linear-gradient(180deg, #ff7eb9, #ff4a8d);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0;
+      box-shadow: 3px 0 15px rgba(255,82,146,0.6);
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 70px;
+      user-select: none;
+      z-index: 100;
+    }
+
+    /* Nav icons */
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      flex-grow: 1;
+      align-items: center;
+      margin-top: 2rem;
+    }
+    nav a {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      cursor: pointer;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+    nav a:hover,
+    nav a.active {
+      background-color: rgba(255, 74, 141, 0.8);
+      box-shadow: 0 0 12px #ff4a8d;
+    }
+    /* Tooltip */
+    nav a::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 110%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #d14774;
+      padding: 0.2rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      opacity: 0;
+      white-space: nowrap;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      color: #fff0f7;
+      pointer-events: none;
+    }
+    nav a:hover::after,
+    nav a:focus::after,
+    nav a.active::after {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Header */
+    header {
+      grid-area: header;
+      background: #fff0f7;
+      border-bottom: 3px solid #ff4a8d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #d14774;
+      user-select: none;
+      box-shadow: 0 3px 8px rgba(255,74,141,0.15);
+      position: relative;
+      z-index: 1;
+      margin-left: 70px;
+    }
+
+    /* Profile picture centralized above */
+    .profile-top {
+      grid-column: 2 / 3;
+      justify-self: center;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 10;
+      margin-left: 70px;
+      display: flex;
+      justify-content: center;
+    }
+    .profile-pic-large {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 5px solid #ff7291;
+      box-shadow: 0 0 30px 6px rgba(255,114,145,0.5);
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+    .profile-pic-large:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 40px 8px #d14774;
+    }
+
+    /* Main Content */
+    main {
+      grid-area: main;
+      overflow-y: auto;
+      padding: 1rem 3rem 3rem 3rem;
+      margin-left: 70px;
+      position: relative;
+      min-height: calc(100vh - 250px);
+    }
+
+    section {
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Section heading - Latin serif with emoji */
+    section h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #d14774;
+      user-select:none;
+    }
+    section h2 span.emoji {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+
+    section p {
+      font-weight: 300;
+      line-height: 1.65;
+      color: #66334d;
+      max-width: 720px;
+      font-size: 1.1rem;
+    }
+
+    /* Skills */
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .skills-list span {
+      background: #ff7eb9;
+      color: white;
+      font-weight: 600;
+      padding: 0.6rem 1.1rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(255,126,185,0.6);
+      transition: background-color 0.3s ease;
+      user-select: none;
+      cursor: default;
+    }
+    .skills-list span:hover {
+      background: #d14774;
+    }
+
+    /* CV - simplified text */
+    .cv-text {
+      max-width: 720px;
+      font-weight: 300;
+      color: #7a536c;
+      line-height: 1.5;
+      font-size: 1.1rem;
+      white-space: pre-line;
+    }
+
+    /* Music player and playlist */
+    .music-player-container {
+      margin: 2rem 0;
+      background: #ffe1f1;
+      border-radius: 16px;
+      padding: 1rem 2rem 2rem 2rem;
+      box-shadow: 0 8px 20px rgba(255,126,185,0.35);
+      max-width: 720px;
+    }
+    .music-player-container h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #d14774;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    .music-player-container h3 span.emoji {
+      font-size: 2rem;
+    }
+    audio {
+      width: 100%;
+      border-radius: 12px;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(255,126,185,0.3);
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    ul.playlist {
+      list-style: none;
+      padding-left: 0;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+    ul.playlist li {
+      padding: 0.45rem 0;
+      cursor: pointer;
+      font-weight: 600;
+      color: #d14774;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    ul.playlist li:hover,
+    ul.playlist li.active {
+      background: #ff7eb980;
+      color: #fff;
+    }
+    ul.playlist li span.duration {
+      font-weight: 300;
+      font-size: 0.9rem;
+      user-select:none;
+    }
+
+    /* Contact */
+    .contact-btn {
+      background: #ff7eb9;
+      color: white;
+      padding: 0.9rem 2.4rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      box-shadow: 0 6px 20px rgba(255,126,185,0.6);
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      user-select:none;
+      display: inline-block;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .contact-btn:hover {
+      background: #d14774;
+      transform: scale(1.08);
+    }
+
+    /* Footer */
+    footer {
+      grid-area: footer;
+      background: #fff0f7;
+      border-top: 3px solid #ff4a8d;
+      color: #d14774;
+      font-weight: 300;
+      font-size: 0.95rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      user-select: none;
+      position: relative;
+      z-index: 0;
+      margin-left: 70px;
+      height: 50px;
+    }
+
+    /* Responsive */
+    @media (max-width: 850px) {
+      main {
+        padding: 1rem 1.5rem 3rem 1.5rem;
+        margin-left: 70px;
+      }
+      nav a {
+        font-size: 22px;
+        width: 38px;
+        height: 38px;
+      }
+    }
+    @media (max-width: 600px) {
+      .page-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto 50px;
+        grid-template-areas:
+          "header"
+          "main"
+          "footer";
+      }
+      .sidebar {
+        display: none;
+      }
+      header {
+        font-size: 1.3rem;
+        text-align: center;
+        margin-left: 0;
+      }
+      main {
+        padding: 1rem 1rem 4rem 1rem;
+        margin-left: 0;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+      }
+      footer {
+        font-size: 0.9rem;
+        margin-left: 0;
+        height: 40px;
+      }
+      .profile-top, .profile-pic-large {
+        margin: 1rem auto;
+        display: block;
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container" role="main">
+    <aside class="sidebar" aria-label="Sidebar navigation">
+      <nav role="navigation" aria-label="Primary navigation">
+        <a href="#about" class="active" aria-current="page" data-tooltip="About" tabindex="0" aria-pressed="true" aria-label="Navigate to about section">
+          <!-- User icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </a>
+        <a href="#skills" data-tooltip="Skills" tabindex="0" aria-label="Navigate to skills section" aria-pressed="false">
+          <!-- Star icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </a>
+        <a href="#cv" data-tooltip="CV" tabindex="0" aria-label="Navigate to curriculum vitae section" aria-pressed="false">
+          <!-- Document icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </a>
+        <a href="#music" data-tooltip="Music" tabindex="0" aria-label="Navigate to music playlist section" aria-pressed="false">
+          <!-- Music icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M9 17v-6a4 4 0 1 1 2 3.46V18a4 4 0 1 1-2-1z"/></svg>
+        </a>
+        <a href="#contact" data-tooltip="Contact" tabindex="0" aria-label="Navigate to contact section" aria-pressed="false">
+          <!-- Mail icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 4h16v16H4z" fill="none"/><path d="M22 6l-10 7L2 6"/></svg>
+        </a>
+      </nav>
+    </aside>
+
+    <header role="banner" aria-label="Website header">Devyna Ayu Damayanti</header>
+
+    <main>
+      <div class="profile-top">
+        <img src="https://i.pravatar.cc/300?img=47" alt="Sarah's Profile Picture" class="profile-pic-large" />
+      </div>
+
+      <section id="about" tabindex="0" aria-label="About me section" style="position: relative;">
+        <h2><span class="emoji" aria-hidden="true">🌸</span>About Me</h2>
+        <p>
+            Hello, I’m Devyna—just a girl who finds beauty in the little things, from warm sunsets to quiet mornings with a cup of tea. I was born on August 27, 2006, in Sidoarjo, and I’m currently 18 years old.
+
+            While most people might say they love coding or design, I have something a little different to say—I love Jefri. It’s a kind of feeling that grows quietly, like a flower blooming in its own time. Something soft, simple, but meaningful.
+            
+            Besides that, I have a deep love for cooking. There’s something comforting about creating dishes from scratch, combining flavors, and watching people smile after tasting them. For me, cooking isn’t just a hobby—it’s one of the ways I express care and creativity.
+            
+            This space is a quiet corner of my world, where I share my thoughts, dreams, and the little things that make me, me.
+        </p>
+      </section>
+
+      <section id="skills" tabindex="0" aria-label="Skills section" style="position: relative;">
+        <h2><span class="emoji" aria-hidden="true">⭐</span>Skills</h2>
+        <div class="skills-list" aria-label="List of skills">
+          <span>UI Design</span>
+          <span>Graphic Design</span>
+          <span>Adobe Photoshop</span>
+          <span>Adobe After Efect</span>
+          <span>Animation</span>
+          <span>Illustration</span>
+        </div>
+      </section>
+
+      <section id="cv" tabindex="0" aria-label="Curriculum vitae section" style="position: relative;">
+        <h2><span class="emoji" aria-hidden="true">📜</span>Curriculum Vitae</h2>
+        <p class="cv-text">
+          <strong>Senior UI Designer</strong> at PinkDesign Studio (2020 - Present)<br />
+          Leading the UI team, creating stylish interfaces, and mentoring designers.<br /><br />
+          <strong>Graphic Designer</strong> at Spark Creative (2017 - 2020)<br />
+          Crafted branding assets and marketing materials with a coquette style.<br /><br />
+          <strong>Bachelor of Fine Arts (BFA)</strong> at Creativity University (2013 - 2017)<br />
+          Specialized in Visual Communication Design and graduated with honors.
+        </p>
+      </section>
+
+      <section id="music" tabindex="0" aria-label="Music playlist section" style="position: relative;">
+        <h2><span class="emoji" aria-hidden="true">🎵</span>Music Playlist</h2>
+        <div class="music-player-container" aria-live="polite" aria-atomic="true" aria-relevant="additions removals">
+          <audio id="audio-player" controls preload="metadata" aria-label="Audio player" tabindex="0">
+            <source src="https://cdn.pixabay.com/download/audio/2022/04/08/audio_46b9b9e68c.mp3?filename=cute-lo-fi-11212.mp3" type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+          <ul class="playlist" role="listbox" tabindex="0" aria-label="Music playlist">
+            <li role="option" data-src="https://cdn.pixabay.com/download/audio/2022/04/08/audio_46b9b9e68c.mp3?filename=cute-lo-fi-11212.mp3" class="active" aria-selected="true" tabindex="-1">
+              Cute Lo-Fi <span class="duration">2:54</span>
+            </li>
+            <li role="option" data-src="https://cdn.pixabay.com/download/audio/2021/10/15/audio_35da3b3a2b.mp3?filename=soft-guitar-melody-110403.mp3" tabindex="-1" aria-selected="false">
+              Soft Guitar Melody <span class="duration">3:38</span>
+            </li>
+            <li role="option" data-src="https://cdn.pixabay.com/download/audio/2022/03/22/audio_675a7d144d.mp3?filename=calm-piano-11316.mp3" tabindex="-1" aria-selected="false">
+              Calm Piano <span class="duration">3:26</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="contact" tabindex="0" aria-label="Contact section" style="position: relative;">
+        <h2><span class="emoji" aria-hidden="true">💌</span>Contact Me</h2>
+        <p>If you'd like to work with me or just say hello, feel free to get in touch!</p>
+        <a href="mailto:sarah@example.com" class="contact-btn" aria-label="Send email to Sarah" tabindex="0">Contact Me</a>
+      </section>
+    </main>
+
+    <footer role="contentinfo">&copy; 2024 Sarah Coquette. All rights reserved.</footer>
+  </div>
+
+  <script>
+    const navLinks = document.querySelectorAll('.sidebar nav a');
+    const sections = document.querySelectorAll('main section');
+
+    // Smooth scroll & active link highlight + animate visibility on scroll
+    function onScroll() {
+      let scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        const id = section.id;
+
+        if(scrollPos >= sectionTop && scrollPos < sectionBottom){
+          navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            const isActive = href === "#" + id;
+            link.classList.toggle('active', isActive);
+            link.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
+          // Animate section if visible
+          if(!section.classList.contains('visible')) {
+            section.classList.add('visible');
+          }
+        }
+      });
+    }
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('load', () => {
+      // Animate sections in viewport on load:
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const viewHeight = window.innerHeight || document.documentElement.clientHeight;
+        if(rect.top < viewHeight) {
+          section.classList.add('visible');
+        }
+      });
+      // Highlight correct nav link
+      onScroll();
+    });
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if(target) {
+          window.scrollTo({
+            top: target.offsetTop - 70,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Music playlist logic
+    const audioPlayer = document.getElementById('audio-player');
+    const playlistItems = document.querySelectorAll('.playlist li');
+
+    playlistItems.forEach((item, idx) => {
+      item.addEventListener('click', () => {
+        // Update active styles
+        playlistItems.forEach(pi => {
+          pi.classList.remove('active');
+          pi.setAttribute('aria-selected', 'false');
+        });
+        item.classList.add('active');
+        item.setAttribute('aria-selected', 'true');
+
+        // Play selected audio
+        const src = item.getAttribute('data-src');
+        audioPlayer.src = src;
+        audioPlayer.play();
+      });
+    });
+  </script>
+</body>
+</html>
+
